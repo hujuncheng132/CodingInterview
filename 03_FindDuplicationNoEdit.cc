@@ -41,8 +41,11 @@ int FindDuplicationNoEdit(const int *numbers,int length)
 			start = mid + 1;
 		}
 	}
-	//当start和end相等时,即找到了重复的数字
-	return start;
+	//当start和end相等时,即找到了重复的数字，如果返回-1，则表示数组不符合题目的要求
+	if(countRange(numbers,length,start,mid) > 1)
+		return start;
+	else
+		return -1;
 }
 
 //=================测试代码=================

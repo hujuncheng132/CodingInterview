@@ -100,7 +100,7 @@ int main()
 
 	binaryTreeNode *node = getNext(&node3);
 	
-	cout << node->m_value << endl;//输出结果应该为8号节点
+	cout << node->m_value << endl;//输出结果应该为8
 
 	return 0;
 }	

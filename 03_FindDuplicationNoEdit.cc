@@ -10,50 +10,60 @@
 
 using namespace std;
 
-int countRange(const int *numbers,int length,int start,int end)
+// 统计数组中值在某个范围[min,max]内的元素的数量
+int countRange(const int numbers[],int length,int min,int max)
 {
+	// 参数有效性检查
+	if(numbers == nullptr)
+		return 0;
+
 	int count = 0;
 	for(int i = 0;i < length;++i)
 	{
-		if(numbers[i] >= start && numbers[i] <= end)
+		if(numbers[i] >= min && numbers[i] <= max)
 			count++;
 	}
 	return count;
 }
 
-//数组的范围大小是n,但数组的大小是n+1，故至少存在一个重复的数字；
-//按数值范围的中位数划分数组，则元素个数大于数值范围大小的那方一定存在重复数字
+//数组的元素值范围是1到n,但数组的大小是n+1，故至少存在一个重复的数字；
+//将数组的元素值范围等分成两部分，分别统计这两个元素值范围内的元素的数量，如果元素数量大于元素值范围的大小，则该元素值范围内一定存在重复的元素值
 int FindDuplicationNoEdit(const int *numbers,int length)
 {
-	int start = 1;
-	int end = length - 1;
-	while(start < end)
-	{
-		int mid = (end + start) / 2;
-		int count = countRange(numbers,length,start,mid);
-		
-		if(count > (mid - start + 1))
-		{
-			end = mid;	
-		}
-		else
-		{
-			start = mid + 1;
-		}
-	}
-	//当start和end相等时,即找到了重复的数字，如果返回-1，则表示数组不符合题目的要求
-	if(countRange(numbers,length,start,mid) > 1)
-		return start;
-	else
+	// 参数有效性检查
+	if(numbers == nullptr || length <= 0)
 		return -1;
-}
 
-//=================测试代码=================
+	// 数组元素的值范围为[min,max]
+	int min = 1;
+	int max = length - 1;
+	while(max >= min)
+	{	
+		// 将元素值范围等分并统计范围内的元素个数
+		int mid = (min + max) / 2; // 或者((max - min) >> 1) + min
+		int count = countRange(numbers,length,min,mid);
+		// 当max == min时表示已经找到那个元素值
+		// 此时还需要统计该元素值的数量，如果大于1则表示正确，否则说明数组存在问题
+		if(max == min)
+		{
+			if(count > 1) //count>1表示找到了这个数
+				return min;
+			else //否则说明输入的数组有问题
+				break;
+		}
+		// 重复元素的值在 元素个数 > 值范围大小 的一方
+		if(count > (mid - min  + 1))
+			max = mid;	
+		else
+			min = mid + 1;
+	}
+	return -1;
+}
 
 int main()
 {
-	int numbers[] = {1,2,2,3,4,5,6,7};
-	cout << "{1,2,2,3,4,5,6,7}" <<  FindDuplicationNoEdit(numbers,sizeof(numbers)/sizeof(int)) << endl;
+	int number[] = {0,2,4,6,8,1,3,5,7,9,3};
+	std::cout << "源数组为：{0,2,4,6,8,1,3,5,7,9,3}，重复的数字为：" << FindDuplicationNoEdit(number,sizeof(number)/sizeof(*number)) << std::endl;
+	
 	return 0;
-
 }

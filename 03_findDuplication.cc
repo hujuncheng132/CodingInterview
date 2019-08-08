@@ -7,8 +7,6 @@
 
 #include<iostream>
 
-using namespace std;
-
 void exchange(int &a,int &b)
 {
 	int temp = a;
@@ -20,8 +18,18 @@ void exchange(int &a,int &b)
 //如果存在重复的数字，则可以通过把每个数字放到和它的值对应的位置处，这样就可以找到重复的数字
 int duplicate(int numbers[], int length)
 {
+	// 参数有效性检查
+	if(numbers == nullptr || length <= 0)
+		return -1;
+	// 数组有效性检查
 	for(int i = 0;i < length;++i)
-	{	//遍历每个位置，如果数值和下标不等，则将其移到和数值相对应的位置处；
+	{
+		if(numbers[i] < 0 || numbers[i] > length - 1)
+			return -1;
+	}
+
+	for(int i = 0;i < length;++i)
+	{	//遍历每个位置，如果数值和下标不等，则将其移到和数值相对应下标的位置处；
 		//如果该处已经有该数值就说明这个数重复了
 		while(numbers[i] != i)
 		{
@@ -38,15 +46,9 @@ int duplicate(int numbers[], int length)
 	return -1;
 }
 
-void Test()
-{
-	int numbers[] = {1,3,0,2,1,4};
-	cout << "{1,3,0,2,1,4} " <<  duplicate(numbers,6) << endl;
-	return;
-}
-
 int main()
 {
-	Test();
+	int numbers[] = {0,3,5,4,2,8,6,9,6,1};
+	std::cout << "源数组为{0,3,5,4,2,8,6,9,6,1}，重复的数字为：" << duplicate(numbers,sizeof(numbers) / sizeof(*numbers)) << std::endl;
 	return 0;
 }

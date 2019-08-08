@@ -5,17 +5,14 @@
 #include<cstring>
 #include<iostream>
 
-using namespace std;
-
 class myString
 {
 public:
-	myString(); 
+	myString();
 	myString(const char *pData); 
 	myString(const myString& otherString); 
 	~myString(); 
 	myString& operator=(const myString& otherString); //赋值运算符
-	void Print();
 private:
 	char* m_pData;	 
 };
@@ -109,31 +106,3 @@ myString& myString::operator=(const myString& otherString)
         return *this;
 }
 
-
-void myString::Print()
-{
-	cout << m_pData << endl;
-}
-
-//==================测试代码=====================
-
-void Test()
-{
-	char* text = "hello world";
-	myString str1(text);//默认构造函数
-	myString str2;//默认构造函数
-	str1.Print();
-	str2.Print();
-	str2 = str1;//赋值运算函数
-	str2.Print();
-	str1 = str1;//赋值运算函数(自己赋值给自己)
-	str1.Print();
-	
-	return;
-}
-
-int main()
-{
-	Test();
-	return 0;
-}

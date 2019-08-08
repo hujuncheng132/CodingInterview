@@ -2,61 +2,72 @@
 面试题6：从尾到头打印链表
 题目：输入一个链表的头结点，从尾到头反过来打印出每个结点的值。
 */
+#include <iostream>
+#include <stack>
 
-#include<iostream>
-#include<stack>
-
-using namespace std;
-
+// 链表节点结构体
 struct listNode
 {
-	int m_value;
-	listNode *next;
+	int value;
+	listNode *pNext;
 	
-	listNode(int value)
-	{
-		m_value = value;
-		next = nullptr;
-	}
+	listNode(int val = 0,listNode *p = nullptr):value(val),pNext(p) { }
 };
 
-//利用栈从头到尾打印链表
-void printListReverst(listNode *pHead)
+//方法一：利用栈先进后出的特点
+void printListReversingly_Iteratively(listNode *pHead)
 {
-	stack<listNode*> nodeStack;
-	listNode* pointer = pHead;
-	while(pointer != nullptr)
+	//利用栈实现先进后出
+	std::stack<listNode*> nodeStack;
+	listNode *pNode = pHead;
+	// 从头到尾遍历链表，依次入栈
+	while(pNode != nullptr)
 	{
-		cout << pointer->m_value << " ";
-		nodeStack.push(pointer);
-		pointer = pointer->next;
+		nodeStack.push(pNode);
+		pNode = pNode->pNext;
 	}
-	cout << endl;
-
+	// 从栈中依次弹出元素,元素的弹出顺序正好和加入时的顺序相反
 	while(!nodeStack.empty())
 	{
-		pointer = nodeStack.top();
-		cout << pointer->m_value << " ";
+		pNode = nodeStack.top();
+		std::cout << pNode->value << " ";
 		nodeStack.pop();
 	}
-	cout << endl;
-	
-	return;
+}
+
+//方法二：利用递归
+void printListReversingly_Recursively(listNode *pHead)
+{
+	if(pHead != nullptr)
+	{
+		if(pHead->pNext != nullptr)
+		{
+			printListReversingly_Recursively(pHead->pNext);
+		}
+		std::cout << pHead->value << " ";
+	}
 }
 
 int main()
 {
-	listNode node1(1);
-	listNode node2(2);		
-	listNode node3(3);
-	listNode node4(4);
-	listNode node5(5);
-	listNode *pHead = &node1;
-	node1.next = &node2;
-	node2.next = &node3;
-	node3.next = &node4;
-	node4.next = &node5;
-	printListReverst(pHead);
+	listNode *pHead = new listNode(0);
+	listNode *p = pHead;
+	for(int i = 1;i < 10;++i)
+	{
+		p->pNext = new listNode(i);
+		p = p->pNext; 
+	}
+	std::cout << "链表的顺序为：0 1 2 3 4 5 6 7 8 9" << std::endl;
+	std::cout << "链表的逆序为：";
+	printListReversingly_Iteratively(pHead);
+	std::cout << std::endl;
+	std::cout << "链表的逆序为：";
+        printListReversingly_Recursively(pHead);
+        std::cout << std::endl;
 	
 	return 0;
 }
+
+
+
+

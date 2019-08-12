@@ -5,21 +5,20 @@
 */
 #include<iostream>
 
-using namespace std;
-
+//二叉树结点定义
 struct binaryTreeNode
 {
-	int m_value;
-	binaryTreeNode *left;
-	binaryTreeNode *right;
-	binaryTreeNode *father;
+	int value;
+	binaryTreeNode *pLeft;
+	binaryTreeNode *pRight;
+	binaryTreeNode *pFather;
 
-	binaryTreeNode(int value)
+	binaryTreeNode(int val)
 	{
-		m_value  = value;
-		left = nullptr;
-		right = nullptr;
-		father = nullptr;
+		value = val;
+		pLeft = nullptr;
+		pRight = nullptr;
+		pFather = nullptr;
 	}
 };
 
@@ -29,33 +28,39 @@ struct binaryTreeNode
 //3、该节点的右子树为空且该节点是其父节点的右节点，从下往上寻找其祖先节点中第一个是其父节点的左节点的节点，该节点的父节点就是下一个节点
 binaryTreeNode* getNext(binaryTreeNode* pNode)
 {
+	// 参数检查
 	if(pNode == nullptr)
 		return nullptr;
 
+	// 记录pNode的下一个节点
 	binaryTreeNode *pNext = nullptr;
+	
 	//右子树不为空，则下一个节点是右子树的最左节点
-	if(pNode->right != nullptr)
+	if(pNode->pRight != nullptr)
 	{
-		binaryTreeNode *pRight = pNode->right;
-		while(pRight->left != nullptr)
-		{
-			pRight = pRight->left;
-		}
-		pNext = pRight;//最左子节点
+		pNext = pNode->pRight;
+		while(pNext->pLeft != nullptr)
+			pNext = pNext->pLeft; // 右子树的最左子节点
 	}
-	//右子树为空，则需要讨论pNode在左节点还是右节点
-	//若为根节点且没有右子树，则没有下一个节点
-	else if(pNode->father != nullptr)
+	//右子树为空，则需要讨论pNode是左节点还是右节点
+	//如果右子树为空，且该节点为根节点，则该节点已经是中序遍历的最后一个结点，返回nullptr
+	else if(pNode->pFather != nullptr)
 	{	
 		binaryTreeNode *pCurrent = pNode;
-		binaryTreeNode *pFather = pNode->father;
-		//如果为左节点且没有右子树，则下一个节点为父节点
-		//如果为右节点且没有右子树，则向上遍历存在左子树的那个节点的父节点为下一个节点
-		//两种情况汇总到一起表示在其从下往上回溯祖先节点的路径中，第一个发生"右拐"的节点
-		while(pFather != nullptr &&  pCurrent == pFather->right)
+		binaryTreeNode *pFather = pNode->pFather;
+		/*
+		如果为左节点且没有右子树，则下一个节点为父节点
+		如果为右节点且没有右子树，则向上回溯到某一节点为左节点，该节点的父节点则为下一个节点
+		如果回溯到了父节点还没有找到，则没有下一个节点
+		两种情况汇总到一起表示在其从下往上回溯祖先节点的路径中，第一个发生"右拐"的节点
+		*/
+		// “pFather == nullptr”表示回溯到父节点仍然没有找到“右拐”的点，则说没有下一个节点
+		// "pCurrent == pFather->pLeft"表示已经找到了那个"右拐"的节点
+		while(pFather != nullptr &&  pCurrent != pFather->pLeft) 
 		{
+			// 回溯，将父节点置为当前结点，然后父节点上移
 			pCurrent = pFather;
-			pFather = pFather->father;
+			pFather = pFather->pFather;
 		}
 		pNext = pFather;	
 	}
@@ -64,43 +69,34 @@ binaryTreeNode* getNext(binaryTreeNode* pNode)
 }
 
 
-
-//=========================测试代码===============================
 int main()
 {
-	binaryTreeNode root(0);
-	binaryTreeNode node1(1);
-	binaryTreeNode node2(2);
-	binaryTreeNode node3(3);
-	binaryTreeNode node4(4);
-	binaryTreeNode node5(5);
-	binaryTreeNode node6(6);
-	binaryTreeNode node7(7);
-	binaryTreeNode node8(8);
+	std::cout << "中序遍历为：4 7 2 1 5 3 8 6" << std::endl;
 
-	root.left = &node1;
-	root.right = &node2;
-	
-	node1.left = &node3;
-	node1.right = &node4;
-	node1.father = &root;
-	
-	node2.left = &node5;
-        node2.right = &node6;
-        node2.father = &root;
+	binaryTreeNode *p1 = new binaryTreeNode(1);
+	binaryTreeNode *p2 = new binaryTreeNode(2);
+	binaryTreeNode *p3 = new binaryTreeNode(3);
+	p1->pLeft = p2;
+	p1->pRight = p3;
+	p2->pFather = p1;
+	p3->pFather = p1;
+	binaryTreeNode *p4 = new binaryTreeNode(4);
+	binaryTreeNode *p5 = new binaryTreeNode(5);
+	binaryTreeNode *p6 = new binaryTreeNode(6);
+	p2->pLeft = p4;
+	p3->pLeft = p5;
+	p3->pRight = p6;
+	p4->pFather = p2;
+	p5->pFather = p3;
+	p6->pFather = p3;
+	binaryTreeNode *p7 = new binaryTreeNode(7);
+	binaryTreeNode *p8 = new binaryTreeNode(8);
+	p4->pRight = p7;
+	p6->pLeft = p8;
+	p7->pFather = p4;
+	p8->pFather = p6;
 
-	node3.left = &node7;
-        node3.right = &node8;
-        node3.father = &node1;
-
-	node4.father = &node1;
-
-	node5.father = &node2;
-	node6.father = &node2;
-
-	binaryTreeNode *node = getNext(&node3);
-	
-	cout << node->m_value << endl;//输出结果应该为8
-
+	std::cout << getNext(p3)->value << " 8 " << std::endl;
+	std::cout << getNext(p2)->value << " 1 " << std::endl;
 	return 0;
 }	

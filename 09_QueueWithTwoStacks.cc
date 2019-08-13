@@ -1,42 +1,41 @@
 /*
 面试题9：用两个栈实现队列
-题目：用两个栈实现一个队列。队列的声明如下，请实现它的两个函数appendTail
-和deleteHead，分别完成在队列尾部插入结点和在队列头部删除结点的功能
+题目：用两个栈实现一个队列。
 */
 
-#include<stack>
-#include<iostream>
-using namespace std;
+#include <iostream>
+#include <stack>
+#include <string>
 
-//使用两个栈代替一个队列
-//stack1用于存储入队数据，入队时直接把数据压入stack1
-//stack2用于存储出队数据，出队时如果stack2为空，则将stack1中的数据依次全部弹出并压入stack2,这样stack2的顶部就是最先入队的数据
-template <typename T> class Queue
+/*
+使用两个栈代替一个队列
+stack1用于存储入队数据，入队时直接把数据压入stack1
+stack2用于存储出队数据，出队时如果stack2为空，则将stack1中的数据依次全部弹出并压入stack2,
+这样stack2的顶部就是最先入队的数据
+*/
+template <typename T> 
+class Queue
 {
 public:
-	void appendTail(T t);
-	T deleteHead();
+	void push(T t); //在队尾添加一个元素
+	void pop(); //弹出队首元素，但不返回
+	T front(); //返回队首元素，但不弹出
+	bool empty(); //判断队列是否为空
 private:
-	stack<T> stack1;
-	stack<T> stack2;
+	std::stack<T> stack1; //入队元素
+	std::stack<T> stack2; //出队元素
 };
 
 template <typename T>
-void Queue<T>::appendTail(T t)
+void Queue<T>::push(T t)
 {
 	stack1.push(t);
 }
 
 template <typename T>
-T Queue<T>::deleteHead()
+void Queue<T>::pop()
 {
-	if(!stack2.empty())
-	{	
-		T t = stack2.top();
-		stack2.pop();
-		return t;
-	}
-	else if(!stack1.empty())
+	if(stack2.empty())
 	{
 		while(!stack1.empty())
 		{
@@ -44,29 +43,45 @@ T Queue<T>::deleteHead()
 			stack2.push(t);
 			stack1.pop();
 		}
-		T t = stack2.top();
-                stack2.pop();
-                return t;
 	}
-	else
+	stack2.pop();         
+	
+	return;
+}
+
+template <typename T>
+T Queue<T>::front()
+{
+	if(stack2.empty())
 	{
-		return NULL;
+		while(!stack1.empty())
+		{
+			T t = stack1.top();
+			stack2.push(t);
+			stack1.pop();
+		}
 	}
+	return stack2.top();         
+}
+
+template <typename T>
+bool Queue<T>::empty()
+{
+	return stack1.empty() && stack2.empty();
 }
 
 int main()
 {
-	Queue<char> queue;
-	queue.appendTail('a');
-	queue.appendTail('b');
-	queue.appendTail('c');
-	char temp = queue.deleteHead();
-	cout << temp << endl;
-	temp = queue.deleteHead();
-        cout << temp << endl;
-	temp = queue.deleteHead();
-        cout << temp << endl;
-	queue.deleteHead();
+	Queue<std::string> queue;
+	queue.push("hello");
+	queue.push("world");
+	queue.push("!");
+	while(!queue.empty())
+	{
+		std::string item = queue.front();
+		queue.pop();
+		std::cout << item << std::endl;
+	}
         
 	return 0;
 }

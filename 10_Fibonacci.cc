@@ -38,12 +38,12 @@ long long Fibonacci(unsigned int n)
 int main()
 {
 	clock_t startTime1 = clock();
-	long long result1 =  FibonacciRec(10);
+	long long result1 =  FibonacciRec(40);
 	clock_t endTime1 = clock();
 	std::cout << result1 <<  " " << "递归方法时间:" <<  (double)(endTime1 - startTime1) / CLOCKS_PER_SEC << "s" << std::endl;
 
 	clock_t startTime2 = clock();
-	long long result2 =  Fibonacci(200);
+	long long result2 =  Fibonacci(40);
 	clock_t endTime2 = clock();
 	std::cout << result2 <<  " " << "非递归方法时间:" <<  (double)(endTime2 - startTime2) / CLOCKS_PER_SEC << "s" << std::endl;
 

@@ -65,7 +65,7 @@ void Stack<T>::pop()
         {
             t = queue1.front();
             queue1.pop();
-            if(!queue1.empty()) //队列2的最后一个元素不用再进入队列1
+            if(!queue1.empty()) //队列1的最后一个元素不用再进入队列2
                 queue2.push(t);
         }
         flag = true;

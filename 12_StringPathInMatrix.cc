@@ -80,12 +80,14 @@ int main()
             std::cout << matrix[i][j] << " ";
         std::cout << std::endl;
     }
-    std::cout << "请输入待查找的字符串：";
+    std::cout << "请输入待匹配的字符串：";
     std::string str;
     std::cin >> str;
     std::cout << "是否存在" << str << "这条路径?" 
     << (hasPath(reinterpret_cast<const char*>(matrix),3,4,str.c_str()) ? "是" : "否") << std::endl;
 
     return 0;
+
+
 
 }
